@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD API</title>
+    <style>
+        body {
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+
+        }
+
+        input {
+            width: 95%;
+            padding: 3px;
+            margin: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        #result {
+            margin-top: 7px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>SignUp Form</h2>
+
+        <input type="text" id="name" placeholder="Enter Name">
+        <input type="email" id="email" placeholder="Enter Email">
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="createUser()">Submit</button>
+
+        <div id="result"></div>
+
+
+    </div>
+
+    <script>
+
+        async function createUser() {
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:5000/api/users",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            password
+                        })
+                    }
+                );
+
+                console.log(response.status);
+
+                const data = await response.json();
+
+                console.log("Response:", data);
+
+                if (!response.ok) {
+
+                    document.getElementById("result").innerHTML =
+                        `<p style="color:red">${data.message}</p>`;
+
+                    return;
+                }
+
+                document.getElementById("result").innerHTML =
+                    `
+    <h3>User Created Successfully</h3>
+    <p>Name: ${data.data.name}</p>
+    <p>Email: ${data.data.email}</p>
+`;
+                console.log(data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
